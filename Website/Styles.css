@@ -1,0 +1,248 @@
+.meniu {
+    list-style-type: none;
+    margin: 200;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    list-style-position: inside;
+    display: flex;
+    flex-wrap: nowrap;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+li a:not(.downloadLink,.sitemap) {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 20px 60px;
+    text-decoration: none;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+li a:hover:not(.active,.icon,.downloadLink,.sitemap) {
+    background-color: rgb(107, 14, 107);
+}
+
+.active {
+    background-color: rgb(43, 6, 43);
+}
+
+body{
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    font-size: 65px;
+    color: white;
+    
+}
+
+.text p {
+    font-size: 35px;
+    color: white;
+    width: 600px;
+    margin: 100px auto 0 auto;
+    text-align: justify;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.text h2 {
+    font-size: 65px;
+    color: white;
+    width: 900px;
+    margin: 100px auto 0 auto;
+    text-align: center;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.text h3 {
+    font-size: 40px;
+    color: white;
+    width: 600px;
+    margin: 50px auto 0 auto;
+    text-align: center;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.header {
+    font-size: 65px;
+    color: white;
+    width: 900px;
+    margin: 100px auto 0 auto;
+    text-align: center;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.text .intro {
+    font-size: 35px;
+    color: white;
+    width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.text img {
+    width: 170px;
+}
+
+.MainGIF {
+    width: 640px;
+    height: 324px;
+}
+
+iframe {
+    width: 640px;
+    height: 324px;
+}
+
+.text {
+    text-align: center;
+    padding-top: 100px;
+    box-sizing: border-box;
+    max-height: 800px;
+    max-width: 1000px;
+}
+
+table {
+    margin: auto;
+    text-align: left;
+    font-size: 20px;
+    border-collapse: collapse;
+    font-size: 35px;
+}
+
+th, td {
+    border: 2px solid white;
+    padding: 8px;
+    color: white;
+}
+
+.icon {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 20px 60px;
+    overflow: hidden;
+    float: left;
+    white-space: nowrap;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 10px;
+    list-style-type: none;
+    margin: 200;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    list-style-position: inside;
+    display: flex;
+    flex-wrap: nowrap;
+    position: fixed;
+    z-index: 1;
+}
+
+.message {
+    position: absolute;
+    margin: 10px;
+    list-style-type: none;
+    margin: 200;
+    padding: 0;
+    overflow: hidden;
+    list-style-position: inside;
+    display: flex;
+    flex-wrap: nowrap;
+    position: fixed;
+    z-index: 1;
+    color: white;
+    font-size: 20px;
+    text-align: center;
+}
+
+.date {
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    list-style-type: none;
+    overflow: hidden;
+    list-style-position: inside;
+    flex-wrap: nowrap;
+    position: fixed;
+    z-index: 1;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 20px 60px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.text .tracksList {
+    list-style-type: none;
+    padding: 0;
+}
+
+.downloadLink {
+    font-size: 20px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+}
+
+.downloadLink:hover {
+    color: yellow;
+}
+
+.text .sitemaplist {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sitemap {
+    font-size: 35px;
+    color: white;
+    text-align: left;
+}
+
+.sitemap:hover {
+    color: yellow;
+}
+
+@media (max-width: 1600px) {
+    .meniu .icon {
+        display: none;
+    }
+}
+
+@media (max-width: 1600px) {
+    .footer .date {
+        display: none;
+    }
+}
