@@ -41,17 +41,26 @@
             color: #fff;
             cursor: pointer;
         }
+		
+		.back-button {
+            background-color: #ff0000; /* Red color */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Administrator Login</h2>
         <?php
-            if (isset($_GET['error'])) {
-                echo '<p style="color: red;">' . htmlspecialchars($_GET['error']) . '</p>';
-            }
+			if (isset($_GET['error'])) {
+				echo '<p style="color: red;">' . htmlspecialchars($_GET['error']) . '</p>';
+			}
         ?>
-        <form action="php_scripts/loginProcess.php" method="post">
+        <form action="loginProcess.php" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
@@ -60,6 +69,11 @@
 
             <input type="submit" value="Login">
         </form>
+	<div style="margin-top: 15px;">
+            <a href="index.html" style="text-decoration: none; display: inline-block;">
+                <button class="back-button">Go back to Index</button>
+            </a>
+        </div>
     </div>
 </body>
 </html>
