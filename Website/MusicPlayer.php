@@ -67,9 +67,8 @@
     </header>
 
     <?php
-    include 'php scripts\connectMusic.php';
+    include 'php_scripts\connectMusic.php';
 
-    // Fetch the maximum and minimum song IDs available in your database
     $resultMinMax = $conn->query("SELECT MAX(id) as maxId, MIN(id) as minId FROM songs");
     $rowMinMax = $resultMinMax->fetch_assoc();
     $maxId = $rowMinMax['maxId'];
@@ -78,13 +77,12 @@
     if (isset($_GET['currentSongId'])) {
         $currentSongId = $_GET['currentSongId'];
     } else {
-        $currentSongId = 1; // Initial song ID
+        $currentSongId = 1;
     }
 
     if (isset($_GET['changeSong'])) {
         $change = $_GET['changeSong'] === 'prev' ? -1 : 1;
 
-        // Update the current song ID within the available range
         $currentSongId += $change;
         if ($currentSongId < $minId) {
             $currentSongId = $maxId;
@@ -93,7 +91,6 @@
         }
     }
 
-    // Fetch the song details based on the updated ID
     $result = $conn->query("SELECT songs.title as song_title, artists.name as artist_name, albums.title as album_title,
         songs.sample_path, songs.image_path
         FROM songs
@@ -103,13 +100,12 @@
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // Display selected song information below the music player title
+
         echo '<h4>' . $row['album_title'] . '</h4>';
         echo '<img src="' . $row['image_path'] . '" alt="' . $row['song_title'] . '" style="border: 1px solid white;">';
         echo '<h3>' . $row['song_title'] . '</h3>';
       	echo '<h4 class="artistName">' . $row['artist_name'] . '</h4>';
 
-        // Music player for the current song
         echo '<div class="songButtons">';
         echo '<form method="get" action="' . $_SERVER['PHP_SELF'] . '">';
         echo '<input type="hidden" name="currentSongId" value="' . $currentSongId . '">';

@@ -12,7 +12,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #837f7f;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -44,10 +44,14 @@
     </style>
 </head>
 <body>
-
     <div class="login-container">
         <h2>Administrator Login</h2>
-        <form action="your_login_process_script.php" method="post">
+        <?php
+            if (isset($_GET['error'])) {
+                echo '<p style="color: red;">' . htmlspecialchars($_GET['error']) . '</p>';
+            }
+        ?>
+        <form action="php_scripts/loginProcess.php" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
@@ -57,6 +61,5 @@
             <input type="submit" value="Login">
         </form>
     </div>
-
 </body>
 </html>
