@@ -1,14 +1,14 @@
 <?php
-include 'php_scripts\connectMusic.php';
+include '..\php_scripts\connectMusic.php';
 
 function handleDeleteFormSubmission($table, $id) {
-    global $conn;
-
+	global $conn;
+	
     switch ($table) {
         case 'artists':
             // Cascade delete: Delete albums and songs related to the artist
-            $conn->query("DELETE FROM albums WHERE artist_id = $id");
             $conn->query("DELETE FROM songs WHERE album_id IN (SELECT id FROM albums WHERE artist_id = $id)");
+            $conn->query("DELETE FROM albums WHERE artist_id = $id");
             break;
 
         case 'albums':
@@ -125,7 +125,10 @@ $conn->close();
         Select Artist:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, name FROM artists");
+			
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
             }
@@ -141,6 +144,8 @@ $conn->close();
         Select Album:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
@@ -157,6 +162,8 @@ $conn->close();
         Select Song:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM songs");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";

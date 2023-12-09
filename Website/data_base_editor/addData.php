@@ -1,5 +1,5 @@
 <?php
-include 'php_scripts\connectMusic.php';
+include '..\php_scripts\connectMusic.php';
 
 function handleFormSubmission($table, $data) {
     global $conn;
@@ -117,6 +117,8 @@ $conn->close();
         Artist:
         <select name="artist_id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, name FROM artists");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -134,6 +136,8 @@ $conn->close();
         Album:
         <select name="album_id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
@@ -141,7 +145,7 @@ $conn->close();
             $conn->close();
             ?>
         </select>
-        Sample Path: <input type="text" name="sample_path" required>
+        <br> Sample Path: <input type="text" name="sample_path" required>
         Image Path: <input type="text" name="image_path" required>
         <input type="submit" value="Add Song">
     </form>

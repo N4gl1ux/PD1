@@ -1,5 +1,5 @@
 <?php
-include 'php_scripts\connectMusic.php';
+include '..\php_scripts\connectMusic.php';
 
 function handleEditFormSubmission($table, $id, $data) {
     global $conn;
@@ -114,6 +114,8 @@ $conn->close();
         Select Artist:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, name FROM artists");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -131,6 +133,8 @@ $conn->close();
         Select Album:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
@@ -142,6 +146,8 @@ $conn->close();
         New Artist:
         <select name="artist_id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, name FROM artists");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -158,6 +164,8 @@ $conn->close();
         Select Song:
         <select name="id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM songs");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
@@ -169,6 +177,8 @@ $conn->close();
         New Album:
         <select name="album_id" required>
             <?php
+			include '..\php_scripts\connectMusic.php';
+			
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";

@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = hash('sha256', $combinedPassword);
 
         if ($hashedPassword === $storedHashedPassword) {
-            header("Location: adminScreen.html");
+            header("Location: ../adminScreen.html");
             $stmt->close();
             $conn->close();
             exit();
