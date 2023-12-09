@@ -60,7 +60,7 @@
 				echo '<p style="color: red;">' . htmlspecialchars($_GET['error']) . '</p>';
 			}
         ?>
-        <form action="loginProcess.php" method="post">
+        <form action="php_scripts/loginProcess.php" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
 
