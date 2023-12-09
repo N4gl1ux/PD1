@@ -1,5 +1,5 @@
 <?php
-include 'php_scripts\connectAuth.php';
+include 'connectAuth.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
