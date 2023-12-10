@@ -1,8 +1,8 @@
 <?php
-	$host = "synthwave-samples.cxyp7u6ndnrf.eu-north-1.rds.amazonaws.com";
-	$user = "admin_synthw";
-	$pass = "v=<5+UCg[m*-PK^;(eRg87";
-	$db_name = "synthwave_samples";
+	$host = apache_getenv('MUSIC_DATABASE_HOST');
+	$user = apache_getenv('MUSIC_DATABASE_USER');
+	$pass = apache_getenv('MUSIC_DATABASE_PASS');
+	$db_name = apache_getenv('MUSIC_DATABASE_NAME');
 	
 	$conn = new mysqli($host, $user, $pass, $db_name);
 	if($conn->connect_error){

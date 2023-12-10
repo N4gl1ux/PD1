@@ -145,7 +145,7 @@ $conn->close();
         <input type="submit" value="Add Album">
     </form>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
         <input type="hidden" name="form_type" value="add_song">
         <h2>Add Song</h2>
         Title: <input type="text" name="title" required>
@@ -161,8 +161,8 @@ $conn->close();
             $conn->close();
             ?>
         </select>
-        <br> Sample Path: <input type="text" name="sample_path" required>
-        Image Path: <input type="text" name="image_path" required>
+        <br> Sample Path: <input type="file" name="sample_path" accept=".mp3" required>
+        Image Path: <input type="file" name="image_path" accept="image/*" required>
         <input type="submit" value="Add Song">
     </form>
     <div style="margin-top: 15px;">

@@ -1,8 +1,8 @@
 <?php
-	$host = "synthwave-authentication.cxyp7u6ndnrf.eu-north-1.rds.amazonaws.com";
-	$user = "admin_auth";
-	$pass = "jbCN:xJ.;(87D5qyH3Q<wm";
-	$db_name = "synth_authentication";
+	$host = apache_getenv('AUTH_DATABASE_HOST');
+	$user = apache_getenv('AUTH_DATABASE_USER');
+	$pass = apache_getenv('AUTH_DATABASE_PASS');
+	$db_name = apache_getenv('AUTH_DATABASE_NAME');
 	
 	$conn = new mysqli($host, $user, $pass, $db_name);
 	if($conn->connect_error){
