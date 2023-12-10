@@ -57,7 +57,7 @@
     <li><a href="index.html">HOME</a></li>
     <li><a href="WhatIsSynthwave.html">WHAT IS SYNTHWAVE</a></li>
     <li><a href="SynthwaveHistory.html">SYNTHWAVE HISTORY AND POPULAR ARTISTS</a></li>
-    <li><a class="active" href="TOP5FavoriteTracks.php">MY FAVORITE TRACKS AND ALBUMS</a></li>
+    <li><a class="active" href="MusicPlayer.php">MUSIC PLAYER</a></li>
     <li><a class="icon" href="index.html"><img src="BackgroundPictures/icontest.png"></a></li>
 </ul>
 
@@ -67,7 +67,7 @@
     </header>
 
     <?php
-    include 'php_scripts\connectMusic.php';
+    include 'php_scripts/connectMusic.php';
 
     $resultMinMax = $conn->query("SELECT MAX(id) as maxId, MIN(id) as minId FROM songs");
     $rowMinMax = $resultMinMax->fetch_assoc();
@@ -157,9 +157,9 @@
 
     <footer>
         <ul class="footer">
-            <li><a href="ContactUs.html">CONTACT ME</a></li>
+            <li><a href="ContactUs.html">CONTACT US</a></li>
             <li><a href="sitemap.html">SITEMAP</a></li>
-            <li><a href="loginScreen.php">ADMIN LOGIN</a></li>
+            <li><a href="adminScreen.php">ADMIN SCREEN</a></li>
             <li class="date">Copyright © 2023 Nag S Synthwave team</li>
         </ul>
     </footer>

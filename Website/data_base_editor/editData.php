@@ -207,7 +207,7 @@ $conn->close();
         <input type="submit" value="Edit Song">
     </form>
 	<div style="margin-top: 15px;">
-        <a href="adminScreen.php" style="text-decoration: none; display: inline-block;">
+        <a href="../adminScreen.php" style="text-decoration: none; display: inline-block;">
             <button class="back-button">Go back to options</button>
         </a>
     </div>
