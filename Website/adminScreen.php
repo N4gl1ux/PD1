@@ -1,3 +1,12 @@
+<?php	
+	session_start();	
+
+	if (!isset($_SESSION['user_id'])) {
+		header("Location: loginScreen.php");
+		exit();
+	}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -54,7 +63,7 @@
     <li><a href="data_base_editor/addData.php">Add Data</a></li>
     <li><a href="data_base_editor/deleteData.php">Delete Data</a></li>
     <li><a href="data_base_editor/editData.php">Edit Data</a></li>
-    <li><a href="index.html">Log out</a></li>
+    <li><a href="php_scripts/logout.php">Log out</a></li>
 </ul>
 
 </body>

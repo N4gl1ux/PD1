@@ -1,5 +1,12 @@
 <?php
-include '..\php_scripts\connectMusic.php';
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../loginScreen.php");
+    exit();
+}
+
+include '../php_scripts/connectMusic.php';
 
 function handleDeleteFormSubmission($table, $id) {
 	global $conn;
@@ -75,7 +82,7 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #837f7f;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
@@ -115,6 +122,15 @@ $conn->close();
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+	    .back-button {
+            background-color: #ff0000; /* Red color */
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
     
 </head>
@@ -125,7 +141,7 @@ $conn->close();
         Select Artist:
         <select name="id" required>
             <?php
-			include '..\php_scripts\connectMusic.php';
+			include '../php_scripts/connectMusic.php';
 			
             $result = $conn->query("SELECT id, name FROM artists");
 			
@@ -144,7 +160,7 @@ $conn->close();
         Select Album:
         <select name="id" required>
             <?php
-			include '..\php_scripts\connectMusic.php';
+			include '../php_scripts/connectMusic.php';
 			
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
@@ -162,7 +178,7 @@ $conn->close();
         Select Song:
         <select name="id" required>
             <?php
-			include '..\php_scripts\connectMusic.php';
+			include '../php_scripts/connectMusic.php';
 			
             $result = $conn->query("SELECT id, title FROM songs");
             while ($row = $result->fetch_assoc()) {
@@ -173,5 +189,10 @@ $conn->close();
         </select>
         <input type="submit" value="Delete Song">
     </form>
+	<div style="margin-top: 15px;">
+        <a href="adminScreen.php" style="text-decoration: none; display: inline-block;">
+            <button class="back-button">Go back to options</button>
+        </a>
+    </div>
 </body>
 </html>

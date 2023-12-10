@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include 'connectAuth.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -23,18 +25,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashedPassword = hash('sha256', $combinedPassword);
 
         if ($hashedPassword === $storedHashedPassword) {
-            header("Location: ../adminScreen.html");
-            $stmt->close();
-            $conn->close();
-            exit();
-        } else {
-            header("Location: loginScreen.php?error=Invalid password");
+	        $_SESSION['user_id'] = $row['id'];
+	        $_SESSION['username'] = $username;
+
+	        session_regenerate_id(true);
+
+            header("Location: ../adminScreen.php");
             $stmt->close();
             $conn->close();
             exit();
         }
-    } else {
-        header("Location: loginScreen.php?error=Invalid username");
+        else {
+            header("Location: ../loginScreen.php?error=Invalid password");
+            $stmt->close();
+            $conn->close();
+            exit();
+        }
+    }
+    else {
+        header("Location: ../loginScreen.php?error=Invalid username");
         $stmt->close();
         $conn->close();
         exit();
