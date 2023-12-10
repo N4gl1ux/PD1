@@ -13,18 +13,15 @@ function handleDeleteFormSubmission($table, $id) {
 	
     switch ($table) {
         case 'artists':
-            // Cascade delete: Delete albums and songs related to the artist
             $conn->query("DELETE FROM songs WHERE album_id IN (SELECT id FROM albums WHERE artist_id = $id)");
             $conn->query("DELETE FROM albums WHERE artist_id = $id");
             break;
 
         case 'albums':
-            // Cascade delete: Delete songs related to the album
             $conn->query("DELETE FROM songs WHERE album_id = $id");
             break;
 
         case 'songs':
-            // Delete the song
             break;
 
         default:
@@ -32,7 +29,6 @@ function handleDeleteFormSubmission($table, $id) {
             return;
     }
 
-    // Delete the record from the specified table
     $sql = "DELETE FROM $table WHERE id = $id";
 
     if ($conn->query($sql) === TRUE) {
@@ -124,7 +120,7 @@ $conn->close();
         }
 
 	    .back-button {
-            background-color: #ff0000; /* Red color */
+            background-color: #ff0000;
             color: #fff;
             padding: 10px 20px;
             border: none;

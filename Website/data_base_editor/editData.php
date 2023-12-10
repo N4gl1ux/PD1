@@ -113,7 +113,7 @@ $conn->close();
         }
 	
 	    .back-button {
-            background-color: #ff0000; /* Red color */
+            background-color: #ff0000;
             color: #fff;
             padding: 10px 20px;
             border: none;
