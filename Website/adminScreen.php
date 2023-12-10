@@ -20,13 +20,13 @@
             font-family: Arial, sans-serif;
             background-color: #837f7f;
         }
-
+        
         ul.options {
             list-style-type: none;
             padding: 0;
             text-align: center;
         }
-
+        
         ul.options li {
             display: inline-block;
             margin: 10px;

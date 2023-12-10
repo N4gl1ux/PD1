@@ -71,7 +71,7 @@
         </form>
 	<div style="margin-top: 15px;">
             <a href="index.html" style="text-decoration: none; display: inline-block;">
-                <button class="back-button">Go back to Index</button>
+                <button class="back-button">Go back to website</button>
             </a>
         </div>
     </div>
