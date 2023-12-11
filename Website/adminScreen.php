@@ -63,6 +63,7 @@
     <li><a href="data_base_editor/addData.php">Add Data</a></li>
     <li><a href="data_base_editor/deleteData.php">Delete Data</a></li>
     <li><a href="data_base_editor/editData.php">Edit Data</a></li>
+    <li><a href="php_scripts/downloadData.php">Download Data</a></li>
     <li><a href="php_scripts/logout.php">Log out</a></li>
 </ul>
 
