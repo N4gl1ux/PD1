@@ -125,87 +125,125 @@ $conn->close();
 </head>
 <body>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <input type="hidden" name="form_type" value="edit_artist">
-        <h2>Edit Artist</h2>
-        Select Artist:
-        <select name="id" required>
-            <?php
-			include '../php_scripts/connectMusic.php';
-			
-            $result = $conn->query("SELECT id, name FROM artists");
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
-            }
-            $conn->close();
-            ?>
-        </select>
-        New Name: <input type="text" name="name" required>
-        <input type="submit" value="Edit Artist">
-    </form>
+    <input type="hidden" name="form_type" value="edit_artist">
+    <h2>Edit Artist</h2>
+    Select Artist:
+    <select name="id" required onchange="loadArtistInfo(this.value)">
+        <?php
+        include '../php_scripts/connectMusic.php';
+
+        $result = $conn->query("SELECT id, name FROM artists");
+        while ($row = $result->fetch_assoc()) {
+            echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+        }
+        $conn->close();
+        ?>
+    </select>
+    New Name: <input type="text" name="name" id="artistName" required>
+    <input type="submit" value="Edit Artist">
+	</form>
+
+	<script>
+	function loadArtistInfo(artistId) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var artistInfo = JSON.parse(xhr.responseText);
+				document.getElementById("artistName").value = artistInfo.name;
+			}
+		};
+		xhr.open("GET", "../php_scripts/getArtistInfo.php?id=" + artistId, true);
+		xhr.send();
+	}
+	</script>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <input type="hidden" name="form_type" value="edit_album">
-        <h2>Edit Album</h2>
-        Select Album:
-        <select name="id" required>
-            <?php
+		<input type="hidden" name="form_type" value="edit_album">
+		<h2>Edit Album</h2>
+		Select Album:
+		<select name="id" required onchange="loadAlbumInfo(this.value)">
+			<?php
 			include '../php_scripts/connectMusic.php';
-			
-            $result = $conn->query("SELECT id, title FROM albums");
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
-            }
-            $conn->close();
-            ?>
-        </select>
-        New Title: <input type="text" name="title" required>
-        New Artist:
-        <select name="artist_id" required>
-            <?php
+			$result = $conn->query("SELECT id, title FROM albums");
+			while ($row = $result->fetch_assoc()) {
+				echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
+			}
+			$conn->close();
+			?>
+		</select>
+		New Title: <input type="text" name="title" id="albumTitleInput" required>
+		New Artist:
+		<select name="artist_id" id="albumArtistId" required>
+			<?php
 			include '../php_scripts/connectMusic.php';
-			
-            $result = $conn->query("SELECT id, name FROM artists");
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
-            }
-            $conn->close();
-            ?>
-        </select>
-        <input type="submit" value="Edit Album">
-    </form>
+			$result = $conn->query("SELECT id, name FROM artists");
+			while ($row = $result->fetch_assoc()) {
+				echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+			}
+			$conn->close();
+			?>
+		</select>
+		<input type="submit" value="Edit Album">
+	</form>
+	
+	<script>
+	function loadAlbumInfo(albumId) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var albumInfo = JSON.parse(xhr.responseText);
+				document.getElementById("albumTitleInput").value = albumInfo.title;
+				document.getElementById("albumArtistId").value = albumInfo.artist_id;
+			}
+		};
+		xhr.open("GET", "../php_scripts/getAlbumInfo.php?id=" + albumId, true);
+		xhr.send();
+	}
+	</script>
 
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-        <input type="hidden" name="form_type" value="edit_song">
-        <h2>Edit Song</h2>
-        Select Song:
-        <select name="id" required>
-            <?php
+	<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+		<input type="hidden" name="form_type" value="edit_song">
+		<h2>Edit Song</h2>
+		Select Song:
+		<select name="id" required onchange="loadSongInfo(this.value)">
+			<?php
 			include '../php_scripts/connectMusic.php';
-			
-            $result = $conn->query("SELECT id, title FROM songs");
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
-            }
-            $conn->close();
-            ?>
-        </select>
-        New Title: <input type="text" name="title" required>
-        New Album:
-        <select name="album_id" required>
-            <?php
+			$result = $conn->query("SELECT id, title FROM songs");
+			while ($row = $result->fetch_assoc()) {
+				echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
+			}
+			$conn->close();
+			?>
+		</select>
+		New Title: <input type="text" name="title" id="songTitleInput" required>
+		New Album:
+		<select name="album_id" id="songAlbumId" required>
+			<?php
 			include '../php_scripts/connectMusic.php';
-			
-            $result = $conn->query("SELECT id, title FROM albums");
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
-            }
-            $conn->close();
-            ?>
-        </select>
-        New Sample Path: <input type="text" name="sample_path" required>
-        New Image Path: <input type="text" name="image_path" required>
-        <input type="submit" value="Edit Song">
-    </form>
+			$result = $conn->query("SELECT id, title FROM albums");
+			while ($row = $result->fetch_assoc()) {
+				echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";
+			}
+			$conn->close();
+			?>
+		</select>
+		<input type="submit" value="Edit Song">
+	</form>
+	
+	<script>
+	function loadSongInfo(songId) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+				var songInfo = JSON.parse(xhr.responseText);
+				document.getElementById("songTitleInput").value = songInfo.title;
+				document.getElementById("songAlbumId").value = songInfo.album_id;
+			}
+		};
+		xhr.open("GET", "../php_scripts/getSongInfo.php?id=" + songId, true);
+		xhr.send();
+	}
+	</script>
 	<div style="margin-top: 15px;">
         <a href="../adminScreen.php" style="text-decoration: none; display: inline-block;">
             <button class="back-button">Go back to options</button>
