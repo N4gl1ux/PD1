@@ -100,16 +100,14 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-<title>Add Data Screen</title>
-
+    <title>Add Data Screen</title>
     <meta charset="UTF-8">
     <meta name="description" content="Add data screen">
     <meta name="keywords" content="synthwave, music, favorite, retrowave">
     <meta name="author" content="Naglis Seliokas, Dovydas Kasulis, Lukas Malijauskas, Nedas Orlingis">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="date" content="2023-12-09">
-
-    <style>
+ <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #837f7f;
@@ -129,6 +127,9 @@ $conn->close();
             max-width: 400px;
             width: 100%;
             box-sizing: border-box;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
@@ -136,7 +137,9 @@ $conn->close();
             color: #333;
         }
 
-        input {
+        input,
+        select,
+        [type="file"] {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -153,7 +156,7 @@ $conn->close();
             background-color: #45a049;
         }
 
-	    .back-button {
+        .back-button {
             background-color: #ff0000;
             color: #fff;
             padding: 10px 20px;
@@ -162,7 +165,6 @@ $conn->close();
             cursor: pointer;
         }
     </style>
-    
 </head>
 <body>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -179,8 +181,8 @@ $conn->close();
         Artist:
         <select name="artist_id" required>
             <?php
-			include '../php_scripts/connectMusic.php';
-			
+            include '../php_scripts/connectMusic.php';
+
             $result = $conn->query("SELECT id, name FROM artists");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
@@ -198,8 +200,8 @@ $conn->close();
         Album:
         <select name="album_id" required>
             <?php
-			include '../php_scripts/connectMusic.php';
-			
+            include '../php_scripts/connectMusic.php';
+
             $result = $conn->query("SELECT id, title FROM albums");
             while ($row = $result->fetch_assoc()) {
                 echo "<option value='" . $row['id'] . "'>" . $row['title'] . "</option>";

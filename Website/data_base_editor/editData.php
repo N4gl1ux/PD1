@@ -88,6 +88,9 @@ $conn->close();
             max-width: 400px;
             width: 100%;
             box-sizing: border-box;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
