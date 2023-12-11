@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+if (!isset($_COOKIE['cookie_choice'])) {
+    $cookieScript = '
+        <script>
+            if (confirm("Do you want to remember your last song?")) {
+                document.cookie = "cookie_choice=accepted; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+            } else {
+                document.cookie = "cookie_choice=declined; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/";
+            }
+        </script>';
+} else {
+    $cookieScript = '';
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,65 +82,82 @@
         <h1 class="header">Music Player</h1>
     </header>
 
-    <?php
-    include 'php_scripts/connectMusic.php';
+	<?php
+		include 'php_scripts/connectMusic.php';
 
-    $resultMinMax = $conn->query("SELECT MAX(id) as maxId, MIN(id) as minId FROM songs");
-    $rowMinMax = $resultMinMax->fetch_assoc();
-    $maxId = $rowMinMax['maxId'];
-    $minId = $rowMinMax['minId'];
+		$cookieChoice = isset($_COOKIE['cookie_choice']) ? $_COOKIE['cookie_choice'] : '';
 
-    if (isset($_GET['currentSongId'])) {
-        $currentSongId = $_GET['currentSongId'];
-    } else {
-        $currentSongId = 1;
-    }
+		$currentSongId = 1;
 
-    if (isset($_GET['changeSong'])) {
-        $change = $_GET['changeSong'] === 'prev' ? -1 : 1;
+		if ($cookieChoice === 'accepted' && isset($_SESSION['lastSongId'])) {
+			$currentSongId = $_SESSION['lastSongId'];
+			$_GET['currentSongId'] = $currentSongId;
+		}
 
-        $currentSongId += $change;
-        if ($currentSongId < $minId) {
-            $currentSongId = $maxId;
-        } elseif ($currentSongId > $maxId) {
-            $currentSongId = $minId;
-        }
-    }
+		if (isset($_GET['currentSongId'])) {
+			$currentSongId = $_GET['currentSongId'];
+		} else {
+			$currentSongId = 1;
+		}
 
-    $result = $conn->query("SELECT songs.title as song_title, artists.name as artist_name, albums.title as album_title,
-        songs.sample_path, songs.image_path
-        FROM songs
-        LEFT JOIN albums ON songs.album_id = albums.id
-        LEFT JOIN artists ON albums.artist_id = artists.id
-        WHERE songs.id = $currentSongId");
+		$resultSongIds = $conn->query("SELECT id FROM songs");
+		$songIds = [];
+		while ($rowSongIds = $resultSongIds->fetch_assoc()) {
+			$songIds[] = $rowSongIds['id'];
+		}
 
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+		if (isset($_GET['changeSong'])) {
+			$change = $_GET['changeSong'] === 'prev' ? -1 : 1;
+			$currentIndex = array_search($currentSongId, $songIds);
 
-        echo '<h4>' . $row['album_title'] . '</h4>';
-        echo '<img src="' . $row['image_path'] . '" alt="' . $row['song_title'] . '" style="border: 1px solid white;">';
-        echo '<h3>' . $row['song_title'] . '</h3>';
-      	echo '<h4 class="artistName">' . $row['artist_name'] . '</h4>';
+			if ($currentIndex !== false) {
+				$currentIndex += $change;
 
-        echo '<div class="songButtons">';
-        echo '<form method="get" action="' . $_SERVER['PHP_SELF'] . '">';
-        echo '<input type="hidden" name="currentSongId" value="' . $currentSongId . '">';
-        echo '<button type="submit" name="changeSong" value="prev">Previous Song</button>';
-        echo '<button type="submit" name="changeSong" value="next">Next Song</button>';
-        echo '</form>';
-        echo '</div>';
+				if ($currentIndex < 0) {
+					$currentIndex = count($songIds) - 1;
+				} elseif ($currentIndex >= count($songIds)) {
+					$currentIndex = 0;
+				}
 
-        echo '<audio controls>';
-        echo '<source src="' . $row['sample_path'] . '" type="audio/mpeg">';
-        echo '</audio>';
-        echo '<br>';
-        echo '<a class="downloadLink" href="' . $row['sample_path'] . '" download="' . $row['song_title'] . '">Download</a>';
-    } else {
-        echo '<h3>No songs available</h3>';
-    }
+				$currentSongId = $songIds[$currentIndex];
+				$_SESSION['lastSongId'] = $currentSongId;
+			}
+		}
 
-    $conn->close();
-    ?>
+		$result = $conn->query("SELECT songs.title as song_title, artists.name as artist_name, albums.title as album_title,
+			songs.sample_path, songs.image_path
+			FROM songs
+			LEFT JOIN albums ON songs.album_id = albums.id
+			LEFT JOIN artists ON albums.artist_id = artists.id
+			WHERE songs.id = $currentSongId");
+
+		if ($result && $result->num_rows > 0) {
+			$row = $result->fetch_assoc();
+
+			echo '<h4>' . $row['album_title'] . '</h4>';
+			echo '<img src="' . $row['image_path'] . '" alt="' . $row['song_title'] . '" style="border: 1px solid white;">';
+			echo '<h3>' . $row['song_title'] . '</h3>';
+			echo '<h4 class="artistName">' . $row['artist_name'] . '</h4>';
+
+			echo '<div class="songButtons">';
+			echo '<form method="get" action="' . $_SERVER['PHP_SELF'] . '">';
+			echo '<input type="hidden" name="currentSongId" value="' . $currentSongId . '">';
+			echo '<button type="submit" name="changeSong" value="prev">Previous Song</button>';
+			echo '<button type="submit" name="changeSong" value="next">Next Song</button>';
+			echo '</form>';
+			echo '</div>';
+
+			echo '<audio controls>';
+			echo '<source src="' . $row['sample_path'] . '" type="audio/mpeg">';
+			echo '</audio>';
+			echo '<br>';
+			echo '<a class="downloadLink" href="' . $row['sample_path'] . '" download="' . $row['song_title'] . '">Download</a>';
+		} else {
+			echo '<h3>No songs available</h3>';
+		}
+
+		$conn->close();
+	?>
 	<h1 class="header">Favorite albums:</h1>
     <div class="gallery">
         <a target="_blank" href="Album/CB.jpg">
@@ -160,8 +193,11 @@
             <li><a href="ContactUs.html">CONTACT US</a></li>
             <li><a href="sitemap.html">SITEMAP</a></li>
             <li><a href="adminScreen.php">ADMIN SCREEN</a></li>
-            <li class="date">Copyright © 2023 Nag S Synthwave team</li>
+            <li class="date">Copyright Â© 2023 Nag S Synthwave team</li>
         </ul>
     </footer>
+
+<?php echo $cookieScript; ?>
+
 </body>
 </html>
