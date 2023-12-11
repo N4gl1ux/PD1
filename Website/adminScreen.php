@@ -19,6 +19,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="date" content="2023-12-09">
 
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        style-src 'self' 'unsafe-inline';
+    ">
+
 <style>
     body {
             display: flex;

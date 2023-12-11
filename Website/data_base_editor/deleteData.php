@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -9,32 +12,137 @@ if (!isset($_SESSION['user_id'])) {
 include '../php_scripts/connectMusic.php';
 
 function handleDeleteFormSubmission($table, $id) {
-	global $conn;
-	
+    global $conn;
+
     switch ($table) {
         case 'artists':
-            $conn->query("DELETE FROM songs WHERE album_id IN (SELECT id FROM albums WHERE artist_id = $id)");
-            $conn->query("DELETE FROM albums WHERE artist_id = $id");
+            deleteArtist($id);
             break;
 
         case 'albums':
-            $conn->query("DELETE FROM songs WHERE album_id = $id");
+            deleteAlbum($id);
             break;
 
         case 'songs':
+            deleteSong($id);
             break;
 
         default:
             echo "Invalid table";
             return;
     }
+}
 
-    $sql = "DELETE FROM $table WHERE id = $id";
+function deleteArtist($artist_id) {
+    global $conn;
 
+    $albumResult = $conn->query("SELECT id FROM albums WHERE artist_id = $artist_id");
+    while ($albumRow = $albumResult->fetch_assoc()) {
+        deleteAlbum($albumRow['id']);
+    }
+
+    $sql = "DELETE FROM artists WHERE id = $artist_id";
     if ($conn->query($sql) === TRUE) {
-        echo ucfirst($table) . " deleted successfully";
+        echo "Artist deleted successfully";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error deleting artist: " . $conn->error;
+    }
+}
+
+function deleteAlbum($album_id) {
+    global $conn;
+
+    $songResult = $conn->query("SELECT id FROM songs WHERE album_id = $album_id");
+    while ($songRow = $songResult->fetch_assoc()) {
+        deleteSong($songRow['id']);
+    }
+   
+    $sql = "DELETE FROM albums WHERE id = $album_id";
+    if ($conn->query($sql) === TRUE) {
+        echo "Album deleted successfully";
+    } else {
+        echo "Error deleting album: " . $conn->error;
+    }
+}
+
+function deleteSong($song_id) {
+    global $conn;
+
+    $songResult = $conn->query("SELECT album_id, title, sample_path, image_path FROM songs WHERE id = $song_id");
+    
+    if ($songResult->num_rows > 0) {
+        $songRow = $songResult->fetch_assoc();
+        $album_id = $songRow['album_id'];
+        $song_title = $songRow['title'];
+        $sample_path_server = $songRow['sample_path'];
+        $image_path_server = $songRow['image_path'];
+
+        deleteFiles($sample_path_server);
+        deleteFiles($image_path_server);
+    }
+
+    $sql = "DELETE FROM songs WHERE id = $song_id";
+    if ($conn->query($sql) === TRUE) {
+        echo "Song deleted successfully";
+    } else {
+        echo "Error deleting song: " . $conn->error;
+    }
+}
+
+function getArtistName($artist_id) {
+    global $conn;
+
+    $sql = "SELECT name FROM artists WHERE id = $artist_id";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['name'];
+    } else {
+        return "Artist not found";
+    }
+}
+
+function getAlbumTitle($album_id) {
+    global $conn;
+
+    $sql = "SELECT title FROM albums WHERE id = $album_id";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['title'];
+    } else {
+        return "Album not found";
+    }
+}
+
+function getAlbumArtistName($album_id) {
+    global $conn;
+
+    $sql = "SELECT artists.name 
+            FROM artists 
+            INNER JOIN albums ON artists.id = albums.artist_id 
+            WHERE albums.id = $album_id";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return $row['name'];
+    } else {
+        return "Artist not found";
+    }
+}
+
+function deleteFiles($path) { 
+   if (is_dir($path)) {
+        $files = glob($path . '/*');
+        foreach ($files as $file) {
+            deleteFiles($file);
+        }
+        rmdir($path);
+    } elseif (is_file($path)) {
+        unlink($path);
     }
 }
 
@@ -78,7 +186,7 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #837f7f;
             margin: 0;
             padding: 0;
             display: flex;

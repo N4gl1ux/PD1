@@ -33,17 +33,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             handleFormSubmission('albums', ['title' => $_POST['title'], 'artist_id' => $_POST['artist_id']]);
             break;
 
-        case 'add_song':
-            handleFormSubmission('songs', [
-                'title' => $_POST['title'],
-                'album_id' => $_POST['album_id'],
-                'sample_path' => $_POST['sample_path'],
-                'image_path' => $_POST['image_path']
-            ]);
-            break;
+		case 'add_song':
+			$title = $_POST['title'];
+			$album_id = $_POST['album_id'];
+
+			$stmt = $conn->prepare("SELECT artists.name AS artist_name, albums.title AS album_name FROM albums JOIN artists ON albums.artist_id = artists.id WHERE albums.id = ?");
+			$stmt->bind_param("i", $album_id);
+			$stmt->execute();
+			$stmt->bind_result($artist_name, $album_name);
+			$stmt->fetch();
+			$stmt->close();
+
+			$sample_extension = pathinfo($_FILES['sample_path']['name'], PATHINFO_EXTENSION);
+			$sample_path_server = '../song samples/' . $artist_name . '/' . $album_name . '/' . $title . '.' . $sample_extension;
+
+			$image_extension = pathinfo($_FILES['image_path']['name'], PATHINFO_EXTENSION);
+			$image_path_server = '../song images/' . $artist_name . '/' . $album_name . '/' . $title . '.' . $image_extension;
+
+			if (file_exists($sample_path_server) || file_exists($image_path_server)) {
+				echo 'Error: The file paths already exist. Choose a different title or album.';
+				break;
+			}
+
+			if (strtolower($sample_extension) != 'mp3') {
+				echo 'Error: Only MP3 files are allowed for Sample Path.';
+				break;
+			}
+
+			$allowed_image_types = ['jpg', 'jpeg', 'png', 'gif'];
+			if (!in_array(strtolower($image_extension), $allowed_image_types)) {
+				echo 'Error: Only JPG, JPEG, PNG, and GIF files are allowed for Image Path.';
+				break;
+			}
+
+			if (!is_dir(dirname($sample_path_server))) {
+				mkdir(dirname($sample_path_server), 0777, true);
+			}
+
+			if (!is_dir(dirname($image_path_server))) {
+				mkdir(dirname($image_path_server), 0777, true);
+			}
+
+			if (move_uploaded_file($_FILES['sample_path']['tmp_name'], $sample_path_server) &&
+				move_uploaded_file($_FILES['image_path']['tmp_name'], $image_path_server)) {
+
+				handleFormSubmission('songs', [
+					'title' => $title,
+					'album_id' => $album_id,
+					'sample_path' => $sample_path_server,
+					'image_path' => $image_path_server
+				]);
+			} else {
+				echo 'Error uploading files';
+			}
+			break;
 
         default:
-            echo "Invalid form type";
+            echo 'Invalid form type';
             break;
     }
 }
@@ -66,7 +112,7 @@ $conn->close();
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #837f7f;
             margin: 0;
             padding: 0;
             display: flex;
