@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../loginScreen.php");
+    header("Location: ../loginScreen.php"); 
     exit();
 }
 
@@ -13,24 +13,27 @@ include '../php_scripts/connectMusic.php';
 
 function handleDeleteFormSubmission($table, $id) {
     global $conn;
+    $successMessage = '';
 
     switch ($table) {
         case 'artists':
-            deleteArtist($id);
+            $successMessage = deleteArtist($id);
             break;
 
         case 'albums':
-            deleteAlbum($id);
+            $successMessage = deleteAlbum($id);
             break;
 
         case 'songs':
-            deleteSong($id);
+            $successMessage = deleteSong($id);
             break;
 
         default:
-            echo "Invalid table";
-            return;
+            $successMessage = "Invalid table";
+            break;
     }
+
+    return $successMessage;
 }
 
 function deleteArtist($artist_id) {
@@ -43,9 +46,9 @@ function deleteArtist($artist_id) {
 
     $sql = "DELETE FROM artists WHERE id = $artist_id";
     if ($conn->query($sql) === TRUE) {
-        echo "Artist deleted successfully";
+        return "Artist deleted successfully";
     } else {
-        echo "Error deleting artist: " . $conn->error;
+        return "Error deleting artist: " . $conn->error;
     }
 }
 
@@ -59,9 +62,9 @@ function deleteAlbum($album_id) {
    
     $sql = "DELETE FROM albums WHERE id = $album_id";
     if ($conn->query($sql) === TRUE) {
-        echo "Album deleted successfully";
+        return "Album deleted successfully";
     } else {
-        echo "Error deleting album: " . $conn->error;
+        return "Error deleting album: " . $conn->error;
     }
 }
 
@@ -83,9 +86,9 @@ function deleteSong($song_id) {
 
     $sql = "DELETE FROM songs WHERE id = $song_id";
     if ($conn->query($sql) === TRUE) {
-        echo "Song deleted successfully";
+        return "Song deleted successfully";
     } else {
-        echo "Error deleting song: " . $conn->error;
+        return "Error deleting song: " . $conn->error;
     }
 }
 
@@ -146,24 +149,26 @@ function deleteFiles($path) {
     }
 }
 
+$successMessage = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $formType = $_POST['form_type'];
 
     switch ($formType) {
         case 'delete_artist':
-            handleDeleteFormSubmission('artists', $_POST['id']);
+            $successMessage = handleDeleteFormSubmission('artists', $_POST['id']);
             break;
 
         case 'delete_album':
-            handleDeleteFormSubmission('albums', $_POST['id']);
+            $successMessage = handleDeleteFormSubmission('albums', $_POST['id']);
             break;
 
         case 'delete_song':
-            handleDeleteFormSubmission('songs', $_POST['id']);
+            $successMessage = handleDeleteFormSubmission('songs', $_POST['id']);
             break;
 
         default:
-            echo "Invalid form type";
+            $successMessage = "Invalid form type";
             break;
     }
 }
@@ -174,8 +179,7 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-<title>Delete Data Screen</title>
-
+    <title>Delete Data Screen</title>
     <meta charset="UTF-8">
     <meta name="description" content="Delete data screen">
     <meta name="keywords" content="synthwave, music, favorite, retrowave">
@@ -203,6 +207,11 @@ $conn->close();
             max-width: 400px;
             width: 100%;
             box-sizing: border-box;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        overflow: hidden;
         }
 
         h2 {
@@ -210,7 +219,8 @@ $conn->close();
             color: #333;
         }
 
-        input {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -227,7 +237,7 @@ $conn->close();
             background-color: #45a049;
         }
 
-	    .back-button {
+        .back-button {
             background-color: #ff0000;
             color: #fff;
             padding: 10px 20px;
@@ -235,8 +245,23 @@ $conn->close();
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .success-message {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            text-align: center;
+            display: none;
+        }
+
+        form.success .success-message {
+            display: block;
+        }
     </style>
-    
 </head>
 <body>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -256,6 +281,7 @@ $conn->close();
             ?>
         </select>
         <input type="submit" value="Delete Artist">
+        <div class="success-message"><?php echo $successMessage; ?></div>
     </form>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -274,6 +300,7 @@ $conn->close();
             ?>
         </select>
         <input type="submit" value="Delete Album">
+        <div class="success-message"><?php echo $successMessage; ?></div>
     </form>
 
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -292,11 +319,29 @@ $conn->close();
             ?>
         </select>
         <input type="submit" value="Delete Song">
+        <div class="success-message"><?php echo $successMessage; ?></div>
     </form>
 	<div style="margin-top: 15px;">
         <a href="../adminScreen.php" style="text-decoration: none; display: inline-block;">
             <button class="back-button">Go back to options</button>
         </a>
     </div>
+
+ <script>
+    var successMessages = document.querySelectorAll('.success-message');
+    var submittedFormType = "<?php echo isset($formType) ? $formType : ''; ?>";
+
+    successMessages.forEach(function (message) {
+        if (message.innerHTML.trim() !== '') {
+            var form = message.closest('form');
+            var formType = form.querySelector('input[name="form_type"]').value;
+
+            if (formType === submittedFormType) {
+                form.classList.add('success');
+                message.style.display = 'block';
+            }
+        }
+    });
+</script>
 </body>
 </html>

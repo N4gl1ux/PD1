@@ -20,35 +20,36 @@ function handleEditFormSubmission($table, $id, $data) {
     $sql = "UPDATE $table SET $update_values_str WHERE id = $id";
 
     if ($conn->query($sql) === TRUE) {
-        echo ucfirst($table) . " updated successfully";
+        return ucfirst($table) . " updated successfully";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        return "Error: " . $sql . "<br>" . $conn->error;
     }
 }
 
+$successMessageArtist = "";
+$successMessageAlbum = "";
+$successMessageSong = "";						   						  
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $formType = $_POST['form_type'];
 
     switch ($formType) {
         case 'edit_artist':
-            handleEditFormSubmission('artists', $_POST['id'], ['name' => $_POST['name']]);
+            $successMessageArtist = handleEditFormSubmission('artists', $_POST['id'], ['name' => $_POST['name']]);
             break;
 
         case 'edit_album':
-            handleEditFormSubmission('albums', $_POST['id'], ['title' => $_POST['title'], 'artist_id' => $_POST['artist_id']]);
+            $successMessageAlbum = handleEditFormSubmission('albums', $_POST['id'], ['title' => $_POST['title'], 'artist_id' => $_POST['artist_id']]);
             break;
 
         case 'edit_song':
-            handleEditFormSubmission('songs', $_POST['id'], [
+            $successMessageSong = handleEditFormSubmission('songs', $_POST['id'], [
                 'title' => $_POST['title'],
                 'album_id' => $_POST['album_id'],
-                'sample_path' => $_POST['sample_path'],
-                'image_path' => $_POST['image_path']
             ]);
             break;
 
         default:
-            echo "Invalid form type";
+            $successMessageArtist = $successMessageAlbum = $successMessageSong = "Invalid form type";
             break;
     }
 }
@@ -62,7 +63,7 @@ $conn->close();
 <title>Edit Data Screen</title>
 
 <meta charset="UTF-8">
-    <meta name="description" content="Delete data screen">
+    <meta name="description" content="Edit data screen">
     <meta name="keywords" content="synthwave, music, favorite, retrowave">
     <meta name="author" content="Naglis Seliokas, Dovydas Kasulis, Lukas Malijauskas, Nedas Orlingis">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -88,17 +89,36 @@ $conn->close();
             max-width: 400px;
             width: 100%;
             box-sizing: border-box;
-            height: 500px;
+			height: 500px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
+
+		.success-message {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            padding: 8px;
+            border-radius: 0 0 8px 8px;
+            box-sizing: border-box;
+            display: none;
+        }
+
+        .success-message.artist { display: <?php echo $successMessageArtist ? 'block' : 'none'; ?>; }
+        .success-message.album { display: <?php echo $successMessageAlbum ? 'block' : 'none'; ?>; }
+        .success-message.song { display: <?php echo $successMessageSong ? 'block' : 'none'; ?>; }
 
         h2 {
             text-align: center;
             color: #333;
         }
 
-        input {
+        input,
+		select {		
             width: 100%;
             padding: 8px;
             margin-bottom: 10px;
@@ -144,6 +164,7 @@ $conn->close();
     </select>
     New Name: <input type="text" name="name" id="artistName" required>
     <input type="submit" value="Edit Artist">
+	<div class="success-message artist"><?php echo $successMessageArtist; ?></div>																				
 	</form>
 
 	<script>
@@ -187,6 +208,7 @@ $conn->close();
 			?>
 		</select>
 		<input type="submit" value="Edit Album">
+		<div class="success-message album"><?php echo $successMessageAlbum; ?></div>
 	</form>
 	
 	<script>
@@ -231,6 +253,7 @@ $conn->close();
 			?>
 		</select>
 		<input type="submit" value="Edit Song">
+		<div class="success-message song"><?php echo $successMessageSong; ?></div>
 	</form>
 	
 	<script>

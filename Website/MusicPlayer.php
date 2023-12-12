@@ -54,15 +54,15 @@ if (!isset($_COOKIE['cookie_choice'])) {
             color: white;
         }
 
-	h4 {
+        h4 {
             color: white;
         }
 
-	.downloadLink {
+        .downloadLink {
             text-decoration: underline;
         }
 
-	h4.artistName {
+        h4.artistName {
             margin-left: 10px; 
         }
     </style>
@@ -87,7 +87,13 @@ if (!isset($_COOKIE['cookie_choice'])) {
 
 		$cookieChoice = isset($_COOKIE['cookie_choice']) ? $_COOKIE['cookie_choice'] : '';
 
-		$currentSongId = 1;
+		$resultSongIds = $conn->query("SELECT id FROM songs");
+                $songIds = [];
+                while ($rowSongIds = $resultSongIds->fetch_assoc()) {
+                        $songIds[] = $rowSongIds['id'];
+                }
+
+		$currentSongId = 0;
 
 		if ($cookieChoice === 'accepted' && isset($_SESSION['lastSongId'])) {
 			$currentSongId = $_SESSION['lastSongId'];
@@ -97,13 +103,7 @@ if (!isset($_COOKIE['cookie_choice'])) {
 		if (isset($_GET['currentSongId'])) {
 			$currentSongId = $_GET['currentSongId'];
 		} else {
-			$currentSongId = 1;
-		}
-
-		$resultSongIds = $conn->query("SELECT id FROM songs");
-		$songIds = [];
-		while ($rowSongIds = $resultSongIds->fetch_assoc()) {
-			$songIds[] = $rowSongIds['id'];
+			$currentSongId = $songIds[0];
 		}
 
 		if (isset($_GET['changeSong'])) {
